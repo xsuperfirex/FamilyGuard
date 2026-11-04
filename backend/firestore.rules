@@ -1,0 +1,10 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Deny all access until authenticated family membership and
+    // per-document ownership rules are implemented and tested.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
