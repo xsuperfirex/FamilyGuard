@@ -1,0 +1,18 @@
+# Xcode and Swift
+.DS_Store
+.build/
+DerivedData/
+*.xcuserstate
+*.xcuserdata/
+*.ipa
+*.p12
+*.mobileprovision
+
+# Firebase: keep per-environment configuration outside public Git history
+GoogleService-Info.plist
+**/GoogleService-Info.plist
+*service-account*.json
+firebase-adminsdk*.json
+.env
+.env.*
+!.env.example
