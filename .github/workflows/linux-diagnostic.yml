@@ -1,0 +1,17 @@
+name: Diagnose GitHub Actions Linux
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/linux-diagnostic.yml'
+jobs:
+  linux-diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check runner
+        run: |
+          echo "GitHub-hosted Linux runner started"
+          uname -a
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Result: success"
