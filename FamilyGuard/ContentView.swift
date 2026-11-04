@@ -29,6 +29,7 @@ struct ContentView: View {
                     }
                 }.navigationTitle("FamilyGuard")
             }.tabItem { Label("Главная", systemImage: "house") }
+            NavigationStack { FamilyPairingView() }.tabItem { Label("Семья", systemImage: "person.2") }
             NavigationStack { LimitsView() }.tabItem { Label("Лимиты", systemImage: "hourglass") }
             NavigationStack { SetupGuideView() }.tabItem { Label("Настройка", systemImage: "checklist") }
             NavigationStack { LocalLocationView() }.tabItem { Label("Карта", systemImage: "map") }
