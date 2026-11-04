@@ -1,0 +1,20 @@
+name: FamilyGuard
+options:
+  bundleIdPrefix: com.example
+settings:
+  base:
+    SWIFT_VERSION: 5.0
+    IPHONEOS_DEPLOYMENT_TARGET: '17.0'
+targets:
+  FamilyGuard:
+    type: application
+    platform: iOS
+    sources: [FamilyGuard]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.FamilyGuard
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: FamilyGuard
+        INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: "Показать ваше местоположение на карте только на этом устройстве."
+        TARGETED_DEVICE_FAMILY: '1'
+        CODE_SIGN_STYLE: Automatic
