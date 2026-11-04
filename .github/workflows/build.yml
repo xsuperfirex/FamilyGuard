@@ -1,4 +1,4 @@
-name: Check iOS simulator build
+name: Check iOS simulator and device builds
 on:
   workflow_dispatch:
   push:
@@ -6,11 +6,31 @@ on:
 jobs:
   build:
     runs-on: macos-15
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
+      - name: Select Xcode
+        run: |
+          xcodebuild -version
+          xcodebuild -showsdks
       - name: Install XcodeGen
         run: brew install xcodegen
       - name: Generate project
         run: xcodegen generate
-      - name: Build simulator (not installable on iPhone)
-        run: xcodebuild -project FamilyGuard.xcodeproj -scheme FamilyGuard -configuration Debug -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build
+      - name: Resolve Firebase Swift packages
+        run: xcodebuild -resolvePackageDependencies -project FamilyGuard.xcodeproj -scheme FamilyGuard
+      - name: Build iOS Simulator (unsigned)
+        run: |
+          set -o pipefail
+          xcodebuild -project FamilyGuard.xcodeproj -scheme FamilyGuard -configuration Debug -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath build/simulator CODE_SIGNING_ALLOWED=NO build
+      - name: Build physical iPhone target (unsigned, not installable)
+        run: |
+          set -o pipefail
+          xcodebuild -project FamilyGuard.xcodeproj -scheme FamilyGuard -configuration Debug -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath build/device CODE_SIGNING_ALLOWED=NO build
+      - name: Verify physical-device binary
+        run: |
+          APP=build/device/Build/Products/Debug-iphoneos/FamilyGuard.app
+          test -d "$APP"
+          test -f "$APP/FamilyGuard"
+          file "$APP/FamilyGuard"
+          echo "Device target compiled. App is UNSIGNED and CANNOT be installed on an iPhone."
