@@ -5,6 +5,8 @@ struct FamilyPairingView: View {
     @AppStorage("demoRole") private var roleRaw = DemoRole.parent.rawValue
     @AppStorage("onboarding.privacyReviewed") private var privacyReviewed = false
     @State private var showExplanation = false
+    @StateObject private var demo = PairingDemoModel()
+    @State private var enteredCode = ""
 
     var body: some View {
         Form {
@@ -33,6 +35,29 @@ struct FamilyPairingView: View {
                 Button("Какие данные планируются?") { showExplanation = true }
                 Text("Отметка сохраняется локально и не является согласием на реальную передачу данных.")
                     .font(.caption).foregroundStyle(.secondary)
+            }
+            Section("Демо-приглашение (без сервера)") {
+                Text(demo.message).font(.footnote)
+                if roleRaw == DemoRole.parent.rawValue {
+                    Button("Создать демонстрационный код") { demo.createDemoInvitation() }
+                    if let code = demo.invitationCode {
+                        Text(code).font(.title2.monospacedDigit())
+                            .accessibilityLabel("Демо-код: \(code)")
+                        Text("Код работает только как пример интерфейса и не подключает другой iPhone.")
+                            .font(.caption).foregroundStyle(.secondary)
+                    }
+                    if demo.phase == .awaitingApproval {
+                        Button("Подтвердить демо") { demo.approveDemo() }
+                    }
+                } else {
+                    TextField("Шесть цифр", text: $enteredCode)
+                        .keyboardType(.numberPad)
+                    Button("Проверить демо-код") { demo.enterDemoInvitation(enteredCode) }
+                }
+                Button("Сбросить демонстрацию", role: .destructive) {
+                    enteredCode = ""
+                    demo.reset()
+                }
             }
             Section("Текущий статус") {
                 Label("Сервер не подключён", systemImage: "server.rack")
